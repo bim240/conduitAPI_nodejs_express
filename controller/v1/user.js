@@ -4,8 +4,15 @@ module.exports = {
   getUserInfo: async (req, res, next) => {
     try {
       // console.log(req.user);
-      var userinfo = await User.findById(req.user.userId);
-      res.status(200).json({ user: userinfo });
+      var userInfo = await User.findById(req.user.userId);
+      var userInfoFormat = {
+        email: userInfo.email,
+        token: req.user.token,
+        username: userInfo.username,
+        bio: userInfo.bio,
+        image: userInfo.image
+      };
+      res.status(201).json({ user: userInfoFormat });
     } catch (error) {
       next(error);
     }
