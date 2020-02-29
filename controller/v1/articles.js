@@ -77,10 +77,26 @@ module.exports = {
       next(error);
     }
   },
+
+  // get feed article
+  getFeedArticle: async (req, res, next) => {
+    try {
+      var following = await User.find(req.user.userId, "following");
+      var feed = following.reduce(async (acc, v) => {
+        var singleFeed = await Article.find({ author: v }).populate("author");
+        acc.push(dingleFedd);
+
+        return acc;
+      }, []);
+      res.status(200).json({ aricles: feed });
+    } catch (error) {
+      next(error);
+    }
+  },
   // filter article
   filterArticles: async (req, res, next) => {
     try {
-      // find by author
+      // seach by author
       if (req.query.author) {
         var author = await User.findOne({ username: req.query.author });
 
