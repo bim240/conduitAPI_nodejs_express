@@ -2,6 +2,7 @@ var User = require("../../models/users");
 var auth = require("../../modules/auth");
 
 module.exports = {
+  // register user
   register: async (req, res, next) => {
     try {
       const user = await User.create(req.body.user);
@@ -20,10 +21,12 @@ module.exports = {
       next(error);
     }
   },
+  // user login
   login: async (req, res, next) => {
     try {
       var { email, password } = req.body.user;
-      if (!email && !password) {
+
+      if (!email || !password) {
         res.status(400).json({ err: "email/password reuired" });
       }
       var user = await User.findOne({ email });

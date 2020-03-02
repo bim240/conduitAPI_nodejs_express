@@ -38,9 +38,22 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  if (err.name == "ValidationError") {
+    res.status(400).json({ err: { body: [err.message] } });
+  }
+  if (err.name == "JsonWebTokenError") {
+    res.status(400).json({ err: { body: [err.message] } });
+  }
+  if (err.name == "MongoError") {
+    res.status(400).json({ err: { body: [err.errmsg] } });
+  }
+  if (err.message == "Not Found") {
+    res.status(404).json({ err: { body: [err.message] } });
+  }
+  console.log(err);
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
+  // res.json(err);
   // render the error page
   res.status(err.status || 500);
   res.render("error");

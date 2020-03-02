@@ -2,12 +2,15 @@ var Article = require("../../models/article");
 var User = require("../../models/users");
 var Comment = require("../../models/comment");
 var auth = require("../../modules/auth");
+var foramtData = require("../../modules/formatData");
 
 module.exports = {
+  // create comments
   createComment: async (req, res, next) => {
     try {
       req.body.comment.author = req.user.userId;
       var article = await Article.findOne({ slug: req.params.slug });
+      console.log(article);
       req.body.comment.articleId = article.id;
       // console.log(req.body.comment);
       const newComment = await (await Comment.create(req.body.comment))
@@ -17,16 +20,18 @@ module.exports = {
         $push: { commentId: newComment.id }
       });
       // var populatedComment = await Comment.findById(newComment.id);
-      console.log(newComment);
-      // res.status(200).json({ comment: populatedComment });
+      // console.log(newComment);
+      var foramtedComment = await foramtData.commentFormat([newComment]);
+      res.status(200).json({ comment: foramtedComment });
     } catch (error) {
       next(error);
     }
   },
+  // get all comments
   getAllComments: async (req, res, next) => {
     try {
-      var allCommentId = await (
-        await Article.findOne({ slug: req.params.slug })
+      var allComments = await (
+        await Article.findOne({ slug: req.params.slug }, "commentId")
       )
         .populate({
           path: "commentId",
@@ -37,13 +42,16 @@ module.exports = {
         })
         .execPopulate();
 
-      // console.log(allCommentId);
-      res.status(200).json({ comments: allCommentId.commentId });
+      console.log(allComments);
+      var foramtedComment = await foramtData.commentFormat(
+        allComments.commentId
+      );
+      res.status(200).json({ comment: foramtedComment });
     } catch (error) {
       next(error);
     }
   },
-  // delete article
+  // delete comments
   deleteComment: async (req, res, next) => {
     try {
       var comment = await Comment.findById(req.params.id);

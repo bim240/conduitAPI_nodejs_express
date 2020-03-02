@@ -21,7 +21,8 @@ module.exports = {
     try {
       var updatedUser = await User.findByIdAndUpdate(
         req.user.userId,
-        req.body.user
+        req.body.user,
+        { new: true }
       );
       var userInfo = {
         email: updatedUser.email,

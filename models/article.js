@@ -20,6 +20,7 @@ var articleSchema = new Schema(
       required: true
     },
     tagList: [String],
+    favoritedBy: [String],
     favorited: Boolean,
     favoritesCount: 0,
     author: [
