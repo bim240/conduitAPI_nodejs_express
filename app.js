@@ -9,7 +9,7 @@ var indexRouter = require("./routes/v1/index");
 
 // connect to database
 mongoose.connect(
-  "mongodb://localhost/conduit",
+  process.env.DATABASEURL || "mongodb://localhost/conduit",
   { useUnifiedTopology: true, useNewUrlParser: true },
   err => {
     console.log(err ? err : "connected to db");
